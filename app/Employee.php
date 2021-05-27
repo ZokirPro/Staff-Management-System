@@ -22,10 +22,6 @@ class Employee extends Model
         return $this->hasMany('App\Attendance');
     }
 
-    public function leave() {
-        return $this->hasMany('App\Leave');
-    }
-
     public function expense() {
         return $this->hasMany('App\Expense');
     }
