@@ -18,6 +18,8 @@ use function Ramsey\Uuid\v1;
 class EmployeeController extends Controller
 {
     public function index() {
+
+        // $employees=Employee::with(['department','attendance','expense'])->get();
         $data = [
             'employees' => Employee::all()
         ];
@@ -142,5 +144,63 @@ class EmployeeController extends Controller
         $attendance->delete();
         request()->session()->flash('success', 'Attendance record has been successfully deleted!');
         return back();
+    }
+
+    public function edit(Request $request, $id)
+    {
+        
+        $employee=Employee::find($id);
+        $departments=Department::all();
+        $desgs=['Manager', 'Assistant Manager', 'Deputy Manager', 'Clerk'];
+        return view('admin.employees.edit',compact('employee','departments','desgs'));
+    }
+
+    public function search(Request $request)
+    {   
+        $name=$request['name'];
+        $designation=$request['designation'];
+        $department=$request['department'];
+        $join_date_from=$request['join_date_from'];
+        $join_date_to=$request['join_date_to'];
+        $salary_from=$request['salary_from'];
+        $salary_to=$request['salary_to'];
+
+        $data=(new Employee)->newQuery()->with(['department'])->join('departments', 'departments.id', '=', 'employees.department_id');
+
+        if($name!=null){
+            $data=$data->where('first_name','like','%'.$name.'%');
+        }
+
+        if($designation!=null){
+            $data=$data->where('desg','like','%'.$designation.'%');
+        }
+        
+        if($department!=null){
+            $data=$data->where('departments.name','like','%'.$department.'%');
+        }
+
+        if($join_date_from!=null){
+            $data=$data->whereDate('employees.created_at','>=',$join_date_from);
+        }
+
+        if($join_date_to!=null){
+            $data=$data->whereDate('employees.created_at','<=',$join_date_to);
+        }
+
+        if($salary_from!=null){
+            $data=$data->where('salary','>=',$salary_from);
+        }
+
+        if($salary_to!=null){
+            $data=$data->where('salary','<=',$salary_to);
+        }
+
+        $employees=$data->get();
+
+         $data = [
+            'employees' => $employees
+        ];
+        return view('admin.employees.index')->with($data);
+
     }
     }

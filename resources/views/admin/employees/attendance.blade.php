@@ -89,10 +89,10 @@
                                     <td>{{ $employee->first_name.' '.$employee->last_name }}</td>
                                     @if($employee->attendanceToday)
                                         <td>
-                                            {{ $employee->attendanceToday->created_at->format('H:i') }}
+                                            {{ $employee->attendanceToday->created_at->format('H:i:s') }}
                                         </td>
                                         <td>
-                                            {{ $employee->attendanceToday->updated_at->format('H:i') }}
+                                            {{ $employee->attendanceToday->updated_at->format('H:i:s') }}
                                         </td>
                                     @else
                                         <td><h6 class="text-center"><span class="badge badge-pill badge-danger">No Record</span></h6></td>
